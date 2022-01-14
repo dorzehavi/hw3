@@ -24,7 +24,7 @@ class DroneAgent:
 
 
 def get_actions(obs0, N, M):
-    action_set = {"reset", "move_down", "move_up", "move_right", "move_left", "pick", "deliver"}
+    action_set = {"reset", "move_down", "move_up", "move_right", "move_left", "pick", "deliver", "wait"}
     drone_loc = obs0["drone_location"]
     if drone_loc[0] - 1 < 0:
         action_set.remove("move_up")
@@ -36,4 +36,14 @@ def get_actions(obs0, N, M):
         action_set.remove("move_right")
     if drone_loc != obs0['target_location']:
         action_set.remove("deliver")
-    for pack in obs0[""]
+    pick_count = 0
+    for pack in obs0["packages"]:
+        pack_loc = pack[1]
+        if pack_loc != drone_loc:
+            pick_count += 1
+    if pick_count == len(obs0["packages"].keys()):
+        action_set.remove("pick")
+    if obs0["target_location"] != drone_loc:
+        action_set.remove("deliver")
+
+    return action_set
